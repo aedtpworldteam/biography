@@ -1,1 +1,103 @@
+/* ===== GENERAL STYLE ===== */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background-color: #f8f8f8;
+  color: rgb(50, 50, 50);
+}
+
+/* ===== TITLE BAR ===== */
+.title-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: rgb(30, 144, 255);
+  color: white;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.title-bar .left-section {
+  display: flex;
+  align-items: center;
+}
+
+.logo {
+  height: 40px;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.site-name {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+/* ===== THEME BOX ===== */
+.theme-box {
+  display: flex;
+  gap: 10px;
+}
+
+.theme-box button {
+  width: 20px;
+  height: 20px;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+#lightMode {
+  background-color: rgb(30, 144, 255);
+}
+
+#darkMode {
+  background-color: rgb(15, 37, 57);
+}
+
+/* ===== SEARCH BAR ===== */
+.search-section {
+  display: flex;
+  justify-content: flex-end;
+  padding: 10px 20px;
+  background-color: #e7e6e6;
+}
+
+#searchBar {
+  width: 300px;
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+}
+
+/* ===== MAIN CONTENT ===== */
+main {
+  padding: 20px;
+}
+
+.bio-list {
+  display: grid;
+  gap: 15px;
+}
+
+.bio-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.bio-card:hover {
+  transform: scale(1.02);
+}
+
+/* ===== FOOTER ===== */
+footer {
+  text-align: center;
+  padding: 15px;
+  background-color: #e7e6e6;
+  color: #555;
+}
 
