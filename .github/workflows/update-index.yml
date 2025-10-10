@@ -1,14 +1,16 @@
 name: Auto-Create and Update Biography Index
 
 on:
-  push:                     # Trigger on any push
-    branches:
-      - main                # (or "master" if that's your default branch)
-  workflow_dispatch:         # Allow manual run from the Actions tab
+  push:                           # Run on every push
+    branches: [main, master]      # Works on either branch
+  workflow_dispatch:              # Allow manual run from Actions tab
 
 jobs:
   update-index:
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: write             # Needed to commit changes
 
     steps:
       - name: Checkout repository
@@ -18,16 +20,21 @@ jobs:
         run: |
           mkdir -p biography
           cd biography
+
           echo "[" > index.json
           shopt -s nullglob
-          for f in biography/*.txt; do
+          files=(biography/*.txt)
+          IFS=$'\n' sorted=($(sort <<<"${files[*]}"))
+          unset IFS
+          for f in "${sorted[@]}"; do
             echo "  \"${f}\"," >> index.json
           done
           sed -i '$ s/,$//' index.json || true
           echo "]" >> index.json
+          echo "✅ index.json generated:"
           cat index.json
 
-      - name: Commit and push updated index.json
+      - name: Commit and push index.json
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "actions@github.com"
