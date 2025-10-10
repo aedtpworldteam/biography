@@ -1,21 +1,33 @@
-name: Update Biography Index
+name: Auto-Update Biography Index
+
 on:
   push:
     paths:
-      - "biography/*.txt"
-      - ".github/workflows/update-index.yml"
+      - "biography/*.txt"   # trigger when any .txt file in biography/biography/ changes
+
 jobs:
-  update:
+  update-index:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
       - name: Generate index.json
         run: |
-          ls biography/*.txt | sed 's|biography/||' | jq -R . | jq -s . > biography/index.json
-      - name: Commit changes
+          cd biography
+          echo "[" > index.json
+          for f in biography/*.txt; do
+            echo "  \"${f}\"," >> index.json
+          done
+          sed -i '$ s/,$//' index.json
+          echo "]" >> index.json
+          cat index.json
+
+      - name: Commit and push updated index.json
         run: |
-          git config --global user.name "AEDTP Bot"
-          git config --global user.email "aedtp@example.com"
-          git add biography/index.json
-          git commit -m "Auto update biography index" || echo "No changes"
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "actions@github.com"
+          git add index.json
+          git commit -m "Auto-update biography/index.json" || echo "No changes to commit"
           git push
