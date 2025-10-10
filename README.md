@@ -1,5 +1,7 @@
-# biography
-Discover And Connect
+# BIOGRAPHY
+## BIOGRAPHY | AEDTP WORLD
+
+###Discover And Connect###
 
 AEDTP WORLD BIOGRAPHY | Global Biography Archive and Submission Platform
 
