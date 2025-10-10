@@ -1,0 +1,21 @@
+name: Update Biography Index
+on:
+  push:
+    paths:
+      - "biography/*.txt"
+      - ".github/workflows/update-index.yml"
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate index.json
+        run: |
+          ls biography/*.txt | sed 's|biography/||' | jq -R . | jq -s . > biography/index.json
+      - name: Commit changes
+        run: |
+          git config --global user.name "AEDTP Bot"
+          git config --global user.email "aedtp@example.com"
+          git add biography/index.json
+          git commit -m "Auto update biography index" || echo "No changes"
+          git push
