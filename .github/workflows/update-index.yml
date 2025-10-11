@@ -1,51 +1,35 @@
-name: Auto-Create and Update Biography Index
+name: Biography Action Runner (Manual JSON Control)
 
 on:
   push:
     paths:
-      - "biography/biography/*.txt"    # Only run when .txt files change inside subfolder
-    branches: [main, master]           # Works for main or master branch
-  workflow_dispatch:                   # Manual run option
+      - "biography/biography/*.txt"   # Runs when .txt files change
+      - "biography/index.json"        # Also runs if you edit index.json manually
+    branches: [main, master]
+  workflow_dispatch:                  # Allow manual trigger
 
 jobs:
-  update-index:
+  check-biographies:
     runs-on: ubuntu-latest
-
-    permissions:
-      contents: write                  # Allow commits from this workflow
 
     steps:
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
-      - name: 🧰 Generate biography/index.json
+      - name: ✅ Verify biography folder exists
         run: |
-          # Go into biography folder
-          mkdir -p biography
-          cd biography
-
-          echo "[" > index.json
-          shopt -s nullglob
-          files=(biography/*.txt)
-
-          if [ ${#files[@]} -eq 0 ]; then
-            echo "  \"// No biography files found\"" >> index.json
-          else
-            IFS=$'\n' sorted=($(sort <<<"${files[*]}"))
-            unset IFS
-            for f in "${sorted[@]}"; do
-              echo "  \"${f}\"," >> index.json
-            done
-            sed -i '$ s/,$//' index.json || true
+          if [ ! -d "biography/biography" ]; then
+            echo "❌ Folder biography/biography not found!"
+            exit 1
           fi
+          echo "✅ Biography folder exists."
 
-          echo "]" >> index.json
-          echo "✅ index.json generated successfully."
-          cat index.json
-
-      - name: 💾 Commit and push index.json
+      - name: 🔍 List biography .txt files
         run: |
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "actions@github.com"
-          git add biography/index.json
-          git diff --quiet && echo "✅ No changes to commit" || (git commit -m "Auto-update biography/index.json" && git push)
+          echo "📄 Found the following biographies:"
+          find biography/biography -name "*.txt" -type f || echo "No biography files found."
+
+      - name: 🚫 Skip auto-creation of index.json
+        run: |
+          echo "ℹ️ Skipping auto-generation of index.json (manual mode active)."
+          echo "👉 You control /biography/index.json manually now."
