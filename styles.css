@@ -1,4 +1,4 @@
-/* ===== GENERAL STYLE ===== */ 
+/* ===== GENERAL STYLE ===== */
 body {
   margin: 0;
   font-family: Arial, sans-serif;
@@ -73,6 +73,8 @@ body {
 /* ===== MAIN CONTENT ===== */
 main {
   padding: 20px;
+  max-width: 900px;       /* ✅ Limits content width */
+  margin: 0 auto;          /* ✅ Centers content */
 }
 
 .bio-list {
