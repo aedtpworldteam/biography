@@ -1,41 +1,50 @@
-const bioList = document.getElementById('bioList');
+name: Auto Update Biography Index
 
-async function loadBiographies() {
-  try {
-    const listResponse = await fetch("index.json");
-    if (!listResponse.ok) throw new Error("Cannot load index.json");
+on:
+  push:
+    paths:
+      - "biography/biography/*.txt"   # Watch for biography text changes
+    branches: [main, master]
+  workflow_dispatch:                  # Allow manual trigger
 
-    const fileList = await listResponse.json();
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
 
-    if (!Array.isArray(fileList) || fileList.length === 0) {
-      bioList.innerHTML = "<p>No biographies available yet.</p>";
-      return;
-    }
+    steps:
+      - name: 🧩 Checkout repository
+        uses: actions/checkout@v4
 
-    for (const filePath of fileList) {
-      try {
-        const response = await fetch(filePath);
-        if (!response.ok) throw new Error(`Failed to load ${filePath}`);
-        const text = await response.text();
+      - name: 📁 Generate biography index.json in main biography folder
+        run: |
+          echo "🔍 Scanning for .txt files in biography/biography/..."
+          mkdir -p biography
 
-        const card = document.createElement('div');
-        card.className = 'bio-card';
-        const filename = filePath.split('/').pop().replace('.txt', '');
-        card.innerHTML = `
-          <h3>${filename.toUpperCase()}</h3>
-          <pre>${text}</pre>
-        `;
-        bioList.appendChild(card);
+          # Write JSON in the main biography folder, not subfolder
+          JSON_PATH="biography/index.json"
 
-      } catch (err) {
-        console.error(`Error loading ${filePath}:`, err);
-      }
-    }
-  } catch (err) {
-    console.error("Error loading biography list:", err);
-    bioList.innerHTML = "<p>⚠️ Error loading biographies. Please try again later.</p>";
-  }
-}
+          echo "[" > $JSON_PATH
 
-loadBiographies();
+          # Find all .txt files and add them to the JSON array
+          find biography/biography -type f -name "*.txt" | sort | sed 's/^/  "biography\//;s/$/",/' >> $JSON_PATH
 
+          # Remove trailing comma from the last item
+          sed -i '$ s/,$//' $JSON_PATH
+
+          echo "]" >> $JSON_PATH
+
+          echo "✅ biography/index.json generated successfully at $JSON_PATH:"
+          cat $JSON_PATH
+
+      - name: 💾 Commit and push updated index.json
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add biography/index.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-update biography index.json"
+            git push
+          fi
