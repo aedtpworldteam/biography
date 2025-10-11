@@ -1,1 +1,41 @@
+const bioList = document.getElementById('bioList');
+
+async function loadBiographies() {
+  try {
+    const listResponse = await fetch("index.json");
+    if (!listResponse.ok) throw new Error("Cannot load index.json");
+
+    const fileList = await listResponse.json();
+
+    if (!Array.isArray(fileList) || fileList.length === 0) {
+      bioList.innerHTML = "<p>No biographies available yet.</p>";
+      return;
+    }
+
+    for (const filePath of fileList) {
+      try {
+        const response = await fetch(filePath);
+        if (!response.ok) throw new Error(`Failed to load ${filePath}`);
+        const text = await response.text();
+
+        const card = document.createElement('div');
+        card.className = 'bio-card';
+        const filename = filePath.split('/').pop().replace('.txt', '');
+        card.innerHTML = `
+          <h3>${filename.toUpperCase()}</h3>
+          <pre>${text}</pre>
+        `;
+        bioList.appendChild(card);
+
+      } catch (err) {
+        console.error(`Error loading ${filePath}:`, err);
+      }
+    }
+  } catch (err) {
+    console.error("Error loading biography list:", err);
+    bioList.innerHTML = "<p>⚠️ Error loading biographies. Please try again later.</p>";
+  }
+}
+
+loadBiographies();
 
