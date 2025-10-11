@@ -1,35 +1,43 @@
-name: Biography Action Runner (Manual JSON Control)
+name: Auto Update Biography Index
 
 on:
   push:
     paths:
-      - "biography/biography/*.txt"   # Runs when .txt files change
-      - "biography/index.json"        # Also runs if you edit index.json manually
+      - "biography/biography/*.txt"
     branches: [main, master]
-  workflow_dispatch:                  # Allow manual trigger
+  workflow_dispatch: # allows manual trigger
 
 jobs:
-  check-biographies:
+  update-json:
     runs-on: ubuntu-latest
 
     steps:
       - name: 🧩 Checkout repository
         uses: actions/checkout@v4
 
-      - name: ✅ Verify biography folder exists
+      - name: 📁 Generate biography index.json
         run: |
-          if [ ! -d "biography/biography" ]; then
-            echo "❌ Folder biography/biography not found!"
-            exit 1
+          echo "🔍 Scanning for .txt files in biography/biography/..."
+          mkdir -p biography
+
+          # Create JSON array of all .txt files in the subfolder
+          echo "[" > biography/index.json
+          find biography/biography -type f -name "*.txt" | sort | sed 's/^/  "/;s/$/",/' >> biography/index.json
+          sed -i '$ s/,$//' biography/index.json  # remove trailing comma
+          echo "]" >> biography/index.json
+
+          echo "✅ Generated biography/index.json"
+          cat biography/index.json
+
+      - name: 💾 Commit and push updated index.json
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add biography/index.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-update biography index.json"
+            git push
           fi
-          echo "✅ Biography folder exists."
-
-      - name: 🔍 List biography .txt files
-        run: |
-          echo "📄 Found the following biographies:"
-          find biography/biography -name "*.txt" -type f || echo "No biography files found."
-
-      - name: 🚫 Skip auto-creation of index.json
-        run: |
-          echo "ℹ️ Skipping auto-generation of index.json (manual mode active)."
-          echo "👉 You control /biography/index.json manually now."
