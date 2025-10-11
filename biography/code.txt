@@ -1,0 +1,49 @@
+name: Auto Update Biography Index
+
+on:
+  push:
+    paths:
+      - "biography/biography/*.txt"  # Run whenever .txt files change
+    branches: [main, master]
+  workflow_dispatch:                 # Allow manual trigger from Actions tab
+
+jobs:
+  update-json:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🧩 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📁 Generate biography index.json
+        run: |
+          echo "🔍 Scanning for .txt files in biography/biography/..."
+          mkdir -p biography
+
+          # Start writing the JSON array
+          echo "[" > biography/index.json
+
+          # Find all .txt files, format as JSON list items
+          find biography/biography -type f -name "*.txt" | sort | sed 's/^/  "biography\//;s/$/",/' >> biography/index.json
+
+          # Remove the trailing comma on the last line
+          sed -i '$ s/,$//' biography/index.json
+
+          # Close the JSON array
+          echo "]" >> biography/index.json
+
+          echo "✅ biography/index.json generated successfully:"
+          cat biography/index.json
+
+      - name: 💾 Commit and push updated index.json
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add biography/index.json
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Auto-update biography index.json"
+            git push
+          fi
