@@ -94,8 +94,8 @@ main {
 .bio-list {
   display: grid;
   gap: 15px;
-  grid-template-columns: 1fr; /* Default: single column */
-  align-items: stretch;       /* Equal height cards */
+  grid-template-columns: 1fr;
+  align-items: stretch;
   overflow-y: auto;
   padding-bottom: 20px;
 }
@@ -120,7 +120,7 @@ main {
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   cursor: pointer;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -150,16 +150,22 @@ main {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%) scale(1);
   width: 90vw;
   height: 90vh;
   z-index: 9999;
   overflow-y: auto;
-  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
-  border-radius: 12px;
+  border-radius: 14px;
   background-color: white;
   padding: 25px;
-  transition: all 0.3s ease-in-out;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4);
+  animation: expandZoom 0.4s ease forwards;
+}
+
+.bio-card.expanded h3 {
+  font-size: 1.6em;
+  text-align: center;
+  margin-bottom: 15px;
+  color: rgb(30, 144, 255);
 }
 
 .bio-card.expanded pre {
@@ -167,14 +173,32 @@ main {
   overflow-y: auto;
 }
 
-.bio-card.expanded h3 {
-  font-size: 1.6em;
-  text-align: center;
-  margin-bottom: 15px;
+/* Smooth zoom and fade animation */
+@keyframes expandZoom {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -45%) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
 }
 
-.bio-card.expanded:hover {
-  transform: translate(-50%, -50%) scale(1.02);
+@keyframes collapseZoom {
+  from {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -55%) scale(0.9);
+  }
+}
+
+/* Add a class to handle the closing animation */
+.bio-card.collapsing {
+  animation: collapseZoom 0.3s ease forwards;
 }
 
 /* ===== BACKGROUND DIM WHEN EXPANDED ===== */
@@ -182,7 +206,7 @@ body::before {
   content: "";
   position: fixed;
   inset: 0;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(0, 0, 0, 0.6);
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
