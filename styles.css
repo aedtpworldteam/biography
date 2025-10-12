@@ -93,9 +93,23 @@ main {
 .bio-list {
   display: grid;
   gap: 15px;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: 1fr; /* Default: single column */
   overflow-y: auto;
   padding-bottom: 20px;
+}
+
+/* 2 columns for medium-to-large screens */
+@media (min-width: 900px) {
+  .bio-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* 3 columns for extra-wide screens */
+@media (min-width: 1400px) {
+  .bio-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
 }
 
 .bio-card {
@@ -120,6 +134,7 @@ main {
   white-space: pre-wrap;
   word-wrap: break-word;
 }
+
 
 /* ===== FOOTER ===== */
 footer {
