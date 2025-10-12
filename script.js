@@ -25,6 +25,13 @@ async function loadBiographies() {
         <h3>${filename.replace('biography/', '').replace('.txt', '').toUpperCase()}</h3>
         <pre>${text}</pre>
       `;
+
+      // Double-click event to expand and collapse the card
+      card.addEventListener('dblclick', () => {
+        const isExpanded = card.classList.toggle('expanded');
+        document.body.classList.toggle('no-scroll', isExpanded);
+      });
+
       bioList.appendChild(card);
     }
 
