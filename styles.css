@@ -94,46 +94,57 @@ main {
   display: grid;
   gap: 15px;
   grid-template-columns: 1fr; /* Default: single column */
+  align-items: stretch;       /* Makes all cards in a row equal height */
   overflow-y: auto;
   padding-bottom: 20px;
 }
 
-/* 2 columns for medium-to-large screens */
+/* 2 columns for medium screens */
 @media (min-width: 900px) {
   .bio-list {
     grid-template-columns: repeat(2, 1fr);
   }
 }
 
-/* 3 columns for extra-wide screens */
+/* 3 columns for large screens */
 @media (min-width: 1400px) {
   .bio-list {
     grid-template-columns: repeat(3, 1fr);
   }
 }
 
+/* ===== CARD STYLE ===== */
 .bio-card {
   background-color: white;
   padding: 15px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0,0,0,0.1);
   cursor: pointer;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;  /* Allow inner text to grow evenly */
+  justify-content: space-between;
+  height: 100%;            /* Fills grid row height */
 }
 
 .bio-card:hover {
   transform: scale(1.02);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
 }
 
 .bio-card h3 {
   margin-top: 0;
   color: rgb(30, 144, 255);
+  font-size: 1.2em;
 }
 
 .bio-card pre {
   white-space: pre-wrap;
   word-wrap: break-word;
+  flex-grow: 1;             /* Makes text fill available space */
+  overflow: hidden;         /* Prevents overflow if text is too long */
 }
+
 
 
 /* ===== FOOTER ===== */
