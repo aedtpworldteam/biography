@@ -26,10 +26,20 @@ async function loadBiographies() {
         <pre>${text}</pre>
       `;
 
-      // Double-click event to expand and collapse the card
+      // Double-click to expand or collapse the card
       card.addEventListener('dblclick', () => {
-        const isExpanded = card.classList.toggle('expanded');
-        document.body.classList.toggle('no-scroll', isExpanded);
+        if (card.classList.contains('expanded')) {
+          // Smooth collapse animation
+          card.classList.add('collapsing');
+          setTimeout(() => {
+            card.classList.remove('expanded', 'collapsing');
+            document.body.classList.remove('no-scroll');
+          }, 300); // matches CSS animation time
+        } else {
+          // Expand card
+          card.classList.add('expanded');
+          document.body.classList.add('no-scroll');
+        }
       });
 
       bioList.appendChild(card);
@@ -43,7 +53,7 @@ async function loadBiographies() {
 loadBiographies();
 
 // ===== SEARCH FUNCTIONALITY =====
-searchBar.addEventListener("input", function() {
+searchBar.addEventListener("input", function () {
   const query = searchBar.value.toLowerCase();
   const cards = bioList.getElementsByClassName("bio-card");
 
