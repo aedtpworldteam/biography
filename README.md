@@ -3,7 +3,7 @@
 
 Discover And Connect
 
-<H2>AEDTP WORLD BIOGRAPHY | Global Biography Archive and Submission Platform# </H2>
+<H2>AEDTP WORLD BIOGRAPHY | Global Biography Archive and Submission Platform </H2>
 
 <H3>AEDTP WORLD BIOGRAPHY </H3> is a professional digital platform dedicated to documenting, archiving, and sharing authentic stories of individuals, innovators, creators, and leaders across the globe. It serves as an interactive and expanding biography submission and exploration system built to preserve knowledge, inspire creativity, and showcase global achievements in one unified digital space. The platform provides a streamlined process for users to submit their own biographies, transforming personal stories into structured, accessible, and beautifully formatted web entries. Designed with precision and modern technology, AEDTP WORLD BIOGRAPHY operates as both an archive and an open submission platform, where contributors from all walks of life can publish text-based biographies directly through an intuitive web interface.
 
