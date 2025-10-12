@@ -7,6 +7,7 @@ body {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  transition: background 0.3s ease;
 }
 
 /* ===== TITLE BAR ===== */
@@ -89,20 +90,109 @@ main {
   overflow-y: auto;
 }
 
+/* ===== BIOGRAPHY CARDS ===== */
+.bio-list {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: 1fr; /* Default: single column */
+  align-items: stretch;       /* Equal height cards */
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
 
+/* 2 columns for medium screens */
+@media (min-width: 900px) {
+  .bio-list {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
+/* 3 columns for large screens */
+@media (min-width: 1400px) {
+  .bio-list {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
 
+.bio-card {
+  background-color: white;
+  padding: 15px;
+  border-radius: 10px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100%;
+}
 
+.bio-card:hover {
+  transform: scale(1.02);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+}
 
+.bio-card h3 {
+  margin-top: 0;
+  color: rgb(30, 144, 255);
+  font-size: 1.2em;
+}
 
+.bio-card pre {
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  flex-grow: 1;
+  overflow: hidden;
+}
 
+/* ===== EXPANDED BIO CARD (FULL PAGE MODE) ===== */
+.bio-card.expanded {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(1);
+  width: 90vw;
+  height: 90vh;
+  z-index: 9999;
+  overflow-y: auto;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  border-radius: 12px;
+  background-color: white;
+  padding: 25px;
+  transition: all 0.3s ease-in-out;
+}
 
+.bio-card.expanded pre {
+  max-height: 80vh;
+  overflow-y: auto;
+}
 
+.bio-card.expanded h3 {
+  font-size: 1.6em;
+  text-align: center;
+  margin-bottom: 15px;
+}
 
+.bio-card.expanded:hover {
+  transform: translate(-50%, -50%) scale(1.02);
+}
 
+/* ===== BACKGROUND DIM WHEN EXPANDED ===== */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 9998;
+}
 
-
-
+body.no-scroll::before {
+  opacity: 1;
+  pointer-events: all;
+}
 
 /* ===== FOOTER ===== */
 footer {
@@ -121,7 +211,7 @@ footer {
   }
   main {
     width: 95%;
-    aspect-ratio: auto; /* Let it expand naturally on smaller devices */
+    aspect-ratio: auto;
   }
 }
 
